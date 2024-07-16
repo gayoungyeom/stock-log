@@ -1,4 +1,5 @@
 {
+  "homepage": "https://gayoungyeom.github.io",
   "name": "stock-log",
   "version": "0.1.0",
   "private": true,
@@ -6,6 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "predeploy": "yarn run build",
+    "deploy": "touch out/.nojekyll && gh-pages -d out --dotfiles",
     "lint": "next lint",
     "prepare": "husky"
   },
