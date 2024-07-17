@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Input, Table } from "@components/ui"
+import { Input, Table } from "@components/ui"
 import {
   TableBody,
   TableCaption,
@@ -9,8 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@components/ui/table"
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
-import { KeyboardEvent, useState } from "react"
+import dayjs from "dayjs"
+import { useState } from "react"
 
 /** 지정한 범위의 숫자들을 step만큼 떨어진 배열로 만들어서 반환 */
 const getRange = (start: number, end: number, step: number) => {
@@ -23,14 +23,11 @@ const getRange = (start: number, end: number, step: number) => {
   return result
 }
 
-/** 엔터 클릭 시 이벤트 핸들러 실행 */
-const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, eventHandler: () => void) => {
-  if (e.nativeEvent.isComposing) return
-  if (e.key === "Enter") eventHandler()
-}
-
 export default function Home() {
-  const [inputPrice, setInputPrice] = useState<number | undefined>()
+  const today = dayjs().format("YYYY-MM-DD")
+
+  const [date, setDate] = useState(today)
+  const [name, setName] = useState<string>("AAPL")
   const [curPrice, setCurPrice] = useState<number | undefined>()
 
   const PERCENTAGES = getRange(2.5, 25, 2.5)
@@ -39,24 +36,40 @@ export default function Home() {
     return value * ((100 - percentgae) / 100)
   }
 
-  const handleSearchClick = () => {
-    setCurPrice(inputPrice)
-  }
-
   return (
     <main className="container pt-6">
-      <div className="flex w-full max-w-sm items-center space-x-2">
-        <span>$</span>
-        <Input
-          type="number"
-          step="0.01"
-          placeholder="Enter current price"
-          onChange={(e) => setInputPrice(Number(e.target.value))}
-          onKeyDown={(e) => handleKeyDown(e, handleSearchClick)}
-        />
-        <Button onClick={handleSearchClick}>
-          <MagnifyingGlassIcon />
-        </Button>
+      <div className="w-full flex flex-col space-y-4">
+        <div className="space-y-2">
+          <div className="text-xs text-right text-slate-500">
+            *You can change the date and name.
+          </div>
+          <div className="flex items-center justify-end space-x-2">
+            <Input
+              className="w-1/3 min-w-32 h-9 rounded-3xl bg-slate-900 text-white text-center focus-visible:rounded-3xl focus-visible:ring-0 focus-visible:ring-offset-0"
+              type="text"
+              placeholder="Date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+            <Input
+              className="w-1/3 min-w-32 h-9 rounded-3xl bg-slate-900 text-white text-center focus-visible:rounded-3xl focus-visible:ring-0 focus-visible:ring-offset-0"
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <span>$</span>
+          <Input
+            type="number"
+            step="0.01"
+            placeholder="price"
+            onChange={(e) => setCurPrice(Number(e.target.value))}
+          />
+        </div>
       </div>
 
       <div className="mt-6">
