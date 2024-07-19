@@ -1,5 +1,6 @@
 "use client"
 
+import PercentageSetting from "@components/stock-log/PercentageSetting"
 import { Input, Table } from "@components/ui"
 import {
   TableBody,
@@ -9,19 +10,10 @@ import {
   TableHeader,
   TableRow,
 } from "@components/ui/table"
+import { getRange } from "@lib/utils"
 import dayjs from "dayjs"
 import { useState } from "react"
-
-/** 지정한 범위의 숫자들을 step만큼 떨어진 배열로 만들어서 반환 */
-const getRange = (start: number, end: number, step: number) => {
-  const result = []
-
-  for (let i = start; i <= end; i += step) {
-    result.push(i)
-  }
-
-  return result
-}
+import { PERCENTAGES_BY_STEP } from "@lib/static"
 
 export default function Home() {
   const today = dayjs().format("YYYY-MM-DD")
@@ -30,7 +22,7 @@ export default function Home() {
   const [name, setName] = useState<string>("AAPL")
   const [curPrice, setCurPrice] = useState<number | undefined>()
 
-  const PERCENTAGES = getRange(2.5, 25, 2.5)
+  const [percentages, setPercentages] = useState(getRange({ ...PERCENTAGES_BY_STEP["2.5"] }))
 
   const getMinusPercentage = (value: number, percentgae: number) => {
     return value * ((100 - percentgae) / 100)
@@ -76,13 +68,18 @@ export default function Home() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[200px]">Percentage</TableHead>
+              <TableHead className="w-[200px] flex items-center gap-2">
+                Percentage
+                <PercentageSetting
+                  saveHandler={(settingValue) => setPercentages(getRange({ ...settingValue }))}
+                />
+              </TableHead>
               <TableHead className="text-right">Value</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {PERCENTAGES.map((percentage) => (
+            {percentages.map((percentage) => (
               <TableRow key={percentage}>
                 <TableCell>-{percentage.toFixed(1)}%</TableCell>
                 <TableCell className="font-medium text-right">
