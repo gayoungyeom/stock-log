@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const apiKey = process.env.ALPHA_VANTAGE_API_KEY
+const apiKey = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY
 
 const api = axios.create({
   baseURL: "https://www.alphavantage.co/query",
